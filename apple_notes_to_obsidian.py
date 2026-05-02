@@ -311,6 +311,11 @@ def main():
         metavar="NAME",
         help="Export only this Apple Notes folder (default: all folders)",
     )
+    parser.add_argument(
+        "--open",
+        action="store_true",
+        help="Open the vault in Obsidian after export",
+    )
     args = parser.parse_args()
 
     if sys.platform != "darwin":
@@ -357,6 +362,12 @@ def main():
     print(f"\nDone — {success} notes exported to: {vault_dir}")
     if errors:
         print(f"  ({errors} notes skipped due to errors)")
+
+    if args.open:
+        import urllib.parse
+        uri = "obsidian://open?path=" + urllib.parse.quote(str(vault_dir), safe="")
+        subprocess.run(["open", uri])
+        print("Opening Obsidian...")
 
 
 if __name__ == "__main__":
